@@ -1,0 +1,17 @@
+# Ignore compiled plugins and plugin manager files
+plugin/packer_compiled.lua
+plugin/compiled
+
+# Ignore swap, undo, and backup files
+*.swp
+*.swo
+*.un~
+*.bak
+
+# Ignore cache and session files
+.cache/
+sessions/
+
+# Ignore logs or other generated files
+*.log
+
