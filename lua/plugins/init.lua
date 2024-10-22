@@ -10,23 +10,6 @@ return {
 	-- Colorscheme
 	{ "folke/tokyonight.nvim" },
 
-	-- Telescope for fuzzy finding
-	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.4",
-		config = function()
-			require('telescope').setup {
-				defaults = {
-					file_ignore_patterns = {"node_modules", ".git"},
-				},
-			}
-		end
-	},
-	{
-		"nvim-telescope/telescope-file-browser.nvim",
-		after = "telescope.nvim"  -- Ensure it loads after telescope
-	},
-
 	-- Lualine Status Line
 	{
 		"nvim-lualine/lualine.nvim",
@@ -278,14 +261,20 @@ return {
 		file_ignore_patterns = {"node_modules", ".git"},
 	      },
 	    }
-	    -- Load the frecency extension
 	    require('telescope').load_extension('frecency')
+	    require('telescope').load_extension('file_browser')
 	  end
 	},
 	{
 	  "nvim-telescope/telescope-frecency.nvim",
 	  dependencies = { "tami5/sqlite.lua" }  -- Frecency needs SQLite
 	},
+	{
+		"nvim-telescope/telescope-file-browser.nvim",
+		after = "telescope.nvim"  -- Ensure it loads after telescope
+	},
+
+
 
 	--[[ {
 	  'rmagatti/auto-session',
