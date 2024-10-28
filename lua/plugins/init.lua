@@ -261,8 +261,8 @@ return {
 		file_ignore_patterns = {"node_modules", ".git"},
 	      },
 	    }
-	    require('telescope').load_extension('file_browser')
 	    require('telescope').load_extension('frecency')
+	    require('telescope').load_extension('file_browser')
 	  end
 	},
 	{
