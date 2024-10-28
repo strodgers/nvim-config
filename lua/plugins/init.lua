@@ -10,23 +10,6 @@ return {
 	-- Colorscheme
 	{ "folke/tokyonight.nvim" },
 
-	-- Telescope for fuzzy finding
-	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.4",
-		config = function()
-			require('telescope').setup {
-				defaults = {
-					file_ignore_patterns = {"node_modules", ".git"},
-				},
-			}
-		end
-	},
-	{
-		"nvim-telescope/telescope-file-browser.nvim",
-		after = "telescope.nvim"  -- Ensure it loads after telescope
-	},
-
 	-- Lualine Status Line
 	{
 		"nvim-lualine/lualine.nvim",
@@ -56,7 +39,7 @@ return {
 	    local lspconfig = require('lspconfig')
 
 	    -- Setup Pyright for Python
-	    lspconfig.pyright.setup{}
+	    -- lspconfig.pyright.setup{}
 
 	    -- Setup clangd for C/C++
 	    lspconfig.clangd.setup{}
@@ -203,7 +186,7 @@ return {
 	  "williamboman/mason-lspconfig.nvim",
 	  config = function()
 	    require("mason-lspconfig").setup {
-	      ensure_installed = { "pyright" },  -- Add LSPs you want Mason to install automatically
+	      -- ensure_installed = { "pyright" },  -- Add LSPs you want Mason to install automatically
 	      automatic_installation = true,  -- Automatically install missing servers
 	    }
 	  end
@@ -278,13 +261,25 @@ return {
 		file_ignore_patterns = {"node_modules", ".git"},
 	      },
 	    }
-	    -- Load the frecency extension
+	    require('telescope').load_extension('file_browser')
 	    require('telescope').load_extension('frecency')
 	  end
 	},
 	{
 	  "nvim-telescope/telescope-frecency.nvim",
 	  dependencies = { "tami5/sqlite.lua" }  -- Frecency needs SQLite
+	},
+	{
+		"nvim-telescope/telescope-file-browser.nvim",
+		after = "telescope.nvim"  -- Ensure it loads after telescope
+	},
+
+
+
+	
+	{
+	  'mg979/vim-visual-multi',
+	  branch = 'master'
 	},
 
 	--[[ {
@@ -297,5 +292,71 @@ return {
 	  end
 	}
 ]]
+
+
+    -- Add nvim-nio for nvim-dap-ui dependency
+    { "nvim-neotest/nvim-nio" },
+	{
+	    "mfussenegger/nvim-dap",
+	    config = function()
+		local dap = require("dap")
+		-- Load project-specific DAP configuration if available
+		local dap_config_path = vim.fn.getcwd() .. "/.nvim-dap.lua"
+		dap.adapters.cppdbg = {
+		    id = "cppdbg",
+		    type = "executable",
+		    command = "/home/sam/.vscode/extensions/ms-vscode.cpptools-1.22.10-linux-x64/debugAdapters/bin/OpenDebugAD7",
+		    options = {
+			detached = false,
+		    },
+		}
+		if vim.fn.filereadable(dap_config_path) == 1 then
+		    dofile(dap_config_path)
+		else
+			dap.configurations.cpp = {
+			  {
+			    name = "Launch file",
+			    type = "cppdbg",
+			    request = "launch",
+			    program = function()
+			      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+			    end,
+			    cwd = '${workspaceFolder}',
+			    stopAtEntry = true,
+			  },
+			  {
+			    name = 'Attach to gdbserver :1234',
+			    type = 'cppdbg',
+			    request = 'launch',
+			    MIMode = 'gdb',
+			    miDebuggerServerAddress = 'localhost:1234',
+			    miDebuggerPath = '/usr/bin/gdb',
+			    cwd = '${workspaceFolder}',
+			    program = function()
+			      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+			    end,
+			  },
+			}
+		end
+	    end
+	},
+
+	    -- nvim-dap-ui for a UI wrapper around debugging
+	    {
+		"rcarriga/nvim-dap-ui",
+		requires = "mfussenegger/nvim-dap",
+		config = function()
+		    require("dapui").setup()
+		    require("dap").listeners.after.event_initialized["dapui_config"] = function()
+			require("dapui").open()
+		    end
+		    require("dap").listeners.before.event_terminated["dapui_config"] = function()
+			require("dapui").close()
+		    end
+		    require("dap").listeners.before.event_exited["dapui_config"] = function()
+			require("dapui").close()
+		    end
+		end
+	    },
 
 }

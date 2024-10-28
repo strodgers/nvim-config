@@ -1,0 +1,17 @@
+-- .nvim-dap.lua
+local dap = require("dap")
+
+dap.configurations.cpp = {
+    {
+        name = "Launch file",
+        type = "cppdbg",
+        request = "launch",
+        program = "/tmp/test-cpp/build/SimpleDebugExample",  -- Set your project-specific path here
+        cwd = "${workspaceFolder}",
+        stopOnEntry = true,
+        setupCommands = {
+            { text = "-enable-pretty-printing", description = "Enable pretty printing", ignoreFailures = false }
+        },
+        runInTerminal = true,
+    }
+}

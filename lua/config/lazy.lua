@@ -31,5 +31,36 @@ require("lazy").setup({
   -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "habamax" } },
   -- automatically check for plugin updates
-  checker = { enabled = true },
+  checker = { enabled = false },
 })
+
+-- Telescope global configuration
+require('telescope').setup{
+  defaults = {
+    -- Ignore certain files or directories (optional)
+    file_ignore_patterns = { "node_modules" },  -- You can customize this if needed
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--hidden'  -- Include hidden files in live_grep
+    }
+  },
+  pickers = {
+    find_files = {
+      hidden = true -- Include hidden files for the `find_files` picker
+    }
+  },
+  extensions = {
+    file_browser = {
+      hidden = true -- Include hidden files for the `file_browser` extension
+    }
+  }
+}
+
+-- Load Telescope extensions (like file_browser, etc.)
+require('telescope').load_extension('file_browser')
